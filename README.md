@@ -232,3 +232,125 @@ The central user journey is simple:
 Submit a pitch → Get roasted or hyped → Receive a score → Hear the verdict → Win a mock seed grant if the score is at least 80.
 
 The goal is to deliver a polished, end-to-end MVP that demonstrates practical integrations with Gemini, ElevenLabs, and Capital One Nessie while keeping the experience entertaining, transparent, and reliable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Idea 2:
+Product Requirement Document (PRD): AuraWealth
+Autonomous AI Financial Concierge & Micro-Investments
+---
+1. Executive Summary & Value Proposition
+AuraWealth is an omni-channel, voice-and-text financial management agent designed to transform personal finance for young adults and students. Rather than forcing users to log into fragmented banking apps and spreadsheets, AuraWealth delivers proactive financial guidance through iMessage and voice calls.
+By unifying streaming analytics, large-scale financial data warehousing, LLM reasoning, and decentralized autonomous micro-investments, AuraWealth monitors bank activity, identifies surplus capital, generates natural audio summaries, and automatically deploys funds into high-yield liquidity pools or vaults on Solana.
+---
+2. Targeted Hackathon Sponsor Tracks
+Sponsor Track	Integrated Technology	Functional Role in AuraWealth
+Best iMessage Agent with Photon	Photon SDK / iMessage Kit	Primary conversational interface for chat notifications, approval requests, and interactive text workflows.
+The Best Use of Nessie with Capital One	Capital One Nessie API	Mock banking backend supplying core checking/savings accounts, customer balances, and transaction history.
+Best Use of Gemini API	Gemini 1.5 Pro / Flash	Central reasoning layer for multi-modal financial diagnostic, natural-language parsing, and dynamic advice generation.
+Best Use of Snowflake	Snowflake Data Cloud	OLAP Data Warehouse for historical spending aggregations, predictive cash-flow modeling, and merchant categorization.
+Best Use of ElevenLabs	ElevenLabs Conversational Voice / Audio Native	Text-to-Speech engine producing realistic voice notes and interactive audio phone calls summarizing daily/weekly financial health.
+Best Use of Solana	Solana Web3.js / Anchor Smart Contracts	Low-cost, fast execution engine for automated micro-yield sweeps and liquid savings vaults.
+Best Use of Tiger Data	Tiger Data (Timescale/Hypertable Engine)	Time-series ingestion engine streaming real-time transaction events and live crypto/fiat market prices.
+DEV Writing Challenge	DEV.to Publishing Pipeline	Architectural post detailing full stack integration and agent execution loops.
+---
+3. High-Level Architecture & Data Flow
+```
+                                +-------------------+
+                                | Capital One Nessie|
+                                +---------+---------+
+                                          | Real-time Webhooks / Poll
+                                          v
++-------------------+           +-------------------+           +-------------------+
+|   Photon API      |<--------->| Fast API Backend  |<--------->|    Tiger Data     |
+| (iMessage Agent)  |           | (Python / Node)   |           | (Time-Series DB)  |
++-------------------+           +---------+---------+           +---------+---------+
+          ^                               |                               |
+          | Interactive                   v                               v
+          v                     +-------------------+           +-------------------+
++-------------------+           |    Gemini API     |           |  Snowflake Cloud  |
+|    ElevenLabs     |<--------->| (Agentic Logic)   |<--------->|  (Data Warehouse) |
+|   (Audio/Voice)   |           +---------+---------+           +-------------------+
++-------------------+                     |
+                                          v
+                                +-------------------+
+                                | Solana Blockchain |
+                                | (Yield Vaults)    |
+                                +-------------------+
+```
+Ingest & Store: Transaction events from Nessie are streamed into Tiger Data (for real-time time-series tracking) and synced to Snowflake (for deep historical querying).
+Analyze & Reason: Gemini Pro queries Snowflake aggregations to compute safe-to-spend limits and potential investment surpluses.
+Notify & Interact: Photon sends an iMessage to the user containing spending highlights and audio summaries powered by ElevenLabs.
+Execute On-Chain: If the user texts "Yes" to a suggested savings sweep, the backend issues an automated transaction on Solana devnet.
+---
+4. Key Functional Features & User Experience
+Feature A: Proactive Spending & Cash-Flow Alerts (iMessage + ElevenLabs)
+User Flow: Every Friday evening, AuraWealth calculates the user’s weekly net savings.
+Execution:
+Snowflake executes a rolling aggregate query comparing the last 7 days against historical monthly averages.
+Gemini translates the analytics into a concise, supportive narrative.
+ElevenLabs renders a 15-second voice note sent via Photon iMessage: "Hey Ruben! You spent $42 less on dining out this week. You have an unallocated surplus of $30."
+Feature B: Automated "Yield-Sweep" Micro-Investments (Solana)
+User Flow: Immediately after sending the weekly summary, Photon prompts: "Would you like me to deposit $20 into your Solana SPL Yield Vault yielding 5.2% APY?"
+Execution:
+The user replies `"Sweep 20"` or tap-approves via inline message.
+The Fast API backend signs a transfer instruction on Solana devnet to mint/transfer yield-bearing synthetic tokens (or USDC-SPL) into the user's non-custodial wallet address.
+Nessie API registers a corresponding pending debit to reflect the swept funds.
+Feature C: Interactive Voice Financial Concierge (ElevenLabs + Gemini)
+User Flow: User initiates an audio call or requests a voice briefing: "Aura, can I afford to buy a $150 jacket right now?"
+Execution:
+Gemini retrieves live balance endpoints from Nessie and time-series spending velocity from Tiger Data.
+Gemini factors in upcoming recurring bills stored in Snowflake.
+ElevenLabs speaks the real-time response: "You have $220 left in discretionary budget, but your subscription bills hit on Tuesday. You can afford it, but it will leave you with a narrow $30 buffer."
+---
+5. System Specifications & Technical Integration
+1. Data Layer: Snowflake & Tiger Data
+Tiger Data (Timescale Hypertables): Stores real-time stream ticks of transaction logs (`timestamp`, `amount`, `merchant`, `category`) and crypto pricing ticks for sub-second query performance.
+Snowflake: Holds cold analytical data models:
+`FACT_TRANSACTIONS`: Transformed raw banking events.
+`DIM_USER_BUDGET`: Dynamic spending baseline thresholds.
+Snowflake Cortex / External Functions: Allows triggering Gemini REST API directly inside SQL routines for bulk sentiment categorization on merchant data.
+2. Conversational & Voice Layer: Photon & ElevenLabs
+Photon iMessage Agent: Listens to incoming webhooks from Apple Messages/SMS. Routes user intents (e.g., `/balance`, `/sweep`, `/budget`) to the central router.
+ElevenLabs: Utilizes the `elevenlabs-node` SDK or Python client. Uses the "Adam" or "Rachel" voice model with customized latency-optimized settings (`eleven_turbo_v2_5`) for real-time audio playback.
+3. Banking & On-Chain Layer: Nessie & Solana
+Capital One Nessie API:
+Endpoint: `GET /accounts/{id}/bills` and `GET /accounts/{id}/purchases`
+Endpoint: `POST /accounts/{id}/transfers` (reflecting yield sweeps)
+Solana Web3 Engine:
+Uses `@solana/web3.js` connected to Solana Devnet.
+Interacts with an Anchor program representing a tokenized lock-box/savings contract, logging transaction signatures back to Tiger Data.
+---
+6. Implementation Plan & Hackathon Timeline
+Phase	Timeframe	Milestones & Tasks
+Phase 1: Setup & Ingestion	Hours 0 – 6	• Provision Tiger Data Hypertable and Snowflake trial schemas.<br>• Seed Capital One Nessie API mock customer accounts and transaction datasets.<br>• Setup Photon iMessage Webhook environment.
+Phase 2: Core Logic & AI	Hours 6 – 14	• Integrate Gemini 1.5 API with custom tools/function calls for finance.<br>• Build Snowflake SQL view for weekly surplus calculation.<br>• Set up ElevenLabs SDK pipeline to convert Gemini text responses to MP3 audio.
+Phase 3: Solana & Agent Loop	Hours 14 – 20	• Deploy a basic Solana Anchor program (or web3 transfer script on Devnet).<br>• Connect Photon iMessage listener to trigger Solana transactions upon user confirmation.<br>• Wire Tiger Data real-time metrics into the system status dashboard.
+Phase 4: Polish & Pitch	Hours 20 – 24	• Record end-to-end demo video showing iMessage text $\rightarrow$ ElevenLabs Audio $\rightarrow$ Solana Tx.<br>• Draft DEV.to technical post covering multi-sponsor integration.
+---
+7. Success Criteria & Judging Alignment
+Seamless Stack Synergy: Demonstrates an undeniable dependency chain: Nessie supplies banking raw data $\rightarrow$ Tiger Data ingests real-time ticks $\rightarrow$ Snowflake calculates metrics $\rightarrow$ Gemini reasons $\rightarrow$ ElevenLabs voices insights $\rightarrow$ Photon handles iMessage $\rightarrow$ Solana executes yield sweeps.
+User Experience: Zero reliance on a complex web frontend; interaction is immediate, familiar, and conversational through iMessage and natural voice.
+Execution & Reliability: Fast response times (<2s for text responses, <4s for voice generation) using streaming webhooks and light-weight Devnet transactions.
