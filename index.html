@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PitchPlease | AI Pitch Coach</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #10111f;
+      color: white;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 24px;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #b6b7ca;
+      margin-bottom: 35px;
+    }
+
+    .panel {
+      background: #1b1d30;
+      border: 1px solid #343650;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    textarea {
+      box-sizing: border-box;
+      width: 100%;
+      height: 140px;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #454762;
+      background: #10111f;
+      color: white;
+      font: inherit;
+      resize: vertical;
+    }
+
+    .personas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .persona {
+      padding: 16px;
+      border: 1px solid #454762;
+      border-radius: 12px;
+      background: #252740;
+      color: white;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .persona.selected {
+      border: 2px solid #a78bfa;
+      background: #343052;
+    }
+
+    .persona p {
+      color: #c2c2d4;
+      font-size: 13px;
+    }
+
+    .main-button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #8b5cf6;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .main-button:hover {
+      background: #7c3aed;
+    }
+
+    #result {
+      white-space: pre-wrap;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px auto;
+      }
+
+      .personas {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>PitchPlease 🎤</h1>
+
+    <p class="subtitle">
+      Your startup idea. Three perspectives. One better pitch.
+    </p>
+
+    <div class="panel">
+      <h2>What's your idea?</h2>
+
+      <textarea id="pitch"
+        placeholder="Describe your startup idea, who it's for, and what problem it solves..."></textarea>
+    </div>
+
+    <div class="panel">
+      <h2>Choose your judge</h2>
+
+      <div class="personas">
+        <button class="persona selected"
+          onclick="selectPersona('vc', this)">
+          <strong>💼 Brutal VC</strong>
+          <p>Finds risks and questions profitability.</p>
+        </button>
+
+        <button class="persona"
+          onclick="selectPersona('hype', this)">
+          <strong>🚀 Hype-Man</strong>
+          <p>Finds strengths and exciting opportunities.</p>
+        </button>
+
+        <button class="persona"
+          onclick="selectPersona('analyst', this)">
+          <strong>📊 Skeptical Analyst</strong>
+          <p>Challenges assumptions and demands evidence.</p>
+        </button>
+      </div>
+    </div>
+
+    <button class="main-button" onclick="judgePitch()">
+      Judge My Pitch →
+    </button>
+
+    <div class="panel" id="results-panel" hidden>
+      <h2>Your Results</h2>
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    let selectedPersona = "vc";
+
+    function selectPersona(persona, button) {
+      selectedPersona = persona;
+
+      document.querySelectorAll(".persona").forEach(function(card) {
+        card.classList.remove("selected");
+      });
+
+      button.classList.add("selected");
+    }
+
+
+async function judgePitch() {
+  const pitch = document.getElementById("pitch").value.trim();
+  const panel = document.getElementById("results-panel");
+  const result = document.getElementById("result");
+  const button = document.querySelector(".main-button");
+
+  if (!pitch) {
+    alert("Please enter your startup idea first!");
+    return;
+  }
+
+  panel.hidden = false;
+  result.textContent = "🤖 Your AI judge is analyzing your pitch...";
+  button.disabled = true;
+  button.textContent = "Analyzing...";
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+
+  try {
+    const response = await fetch("/api/judge", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        pitch: pitch,
+        persona: selectedPersona
+      }),
+      signal: controller.signal
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Something went wrong.");
+    }
+
+    result.textContent = data.feedback;
+
+  } catch (error) {
+    if (error.name === "AbortError") {
+      result.textContent =
+        "The request took too long. Please try again.";
+    } else {
+      result.textContent =
+        "Evaluation failed: " + error.message;
+    }
+  } finally {
+    clearTimeout(timeout);
+    button.disabled = false;
+    button.textContent = "Judge My Pitch →";
+  }
+}
+
+  </script>
+</body>
+</html>
