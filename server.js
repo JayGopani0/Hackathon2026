@@ -124,5 +124,5 @@ NEXT STEPS: Three practical actions to validate or improve the idea.
 });
 
 app.listen(PORT, () => {
-  console.log(`PitchPlease is running at http://localhost:${PORT}`);
+console.log(`AuditMyPitch is running at http://localhost:${PORT}`);
 });

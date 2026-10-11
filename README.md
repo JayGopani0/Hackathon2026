@@ -1,50 +1,47 @@
-# PitchPlease 🎤
+# AuditMyPitch 🎤
 
-PitchPlease is an AI-powered tool that evaluates startup ideas and provides feedback from three different perspectives.
+AuditMyPitch is an AI-powered startup pitch evaluator that helps entrepreneurs improve their business ideas through feedback from three distinct AI judges.
 
-## Features
+## Inspiration
+
+We wanted to make startup feedback accessible to anyone with a business idea, regardless of their access to investors or mentors.
+
+## What It Does
+
+AuditMyPitch evaluates startup ideas using three AI judges:
 
 - **Brutal VC:** Evaluates profitability, competition, and risks.
-- **Hype-Man:** Highlights strengths and opportunities.
-- **Skeptical Analyst:** Challenges assumptions and looks for supporting evidence.
-- **AI Scoring:** Scores startup ideas across five categories, with a total score out of 100.
+- **Hype-Man:** Highlights strengths and opportunities for growth.
+- **Skeptical Analyst:** Challenges assumptions and evaluates feasibility.
 
-## Tech Stack
+Users receive a score out of 100, feedback on their pitch, and actionable recommendations for improvement.
 
-- HTML, CSS, and JavaScript
-- Node.js and Express
+## How We Built It
+
+We used HTML, CSS, and JavaScript for the frontend, Node.js and Express for the backend, and Google's Gemini API to generate AI-powered evaluations.
+
+## Challenges We Ran Into
+
+Integrating the Gemini API, connecting the frontend and backend, and deploying the application while keeping our API key secure.
+
+## Accomplishments We're Proud Of
+
+We built a functional AI-powered tool that evaluates business ideas from three different perspectives.
+
+## What We Learned
+
+We learned how to integrate AI APIs, connect application components, and deploy a web application.
+
+## What's Next for AuditMyPitch
+
+We hope to add pitch history, more personalized feedback, and additional tools to help users improve their ideas over time.
+
+## Built With
+
+- HTML
+- CSS
+- JavaScript
+- Node.js
+- Express.js
 - Google Gemini API
-
-## Getting Started
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/JayGopani0/Hackathon2026.git
-   cd Hackathon2026
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Create a `.env` file in the project folder and add your Gemini API key:
-   ```env
-   GEMINI_API_KEY=your_api_key_here
-   ```
-
-4. Start the app:
-   ```bash
-   node server.js
-   ```
-
-5. Open the local URL shown in your terminal.
-
-**Note:** Keep your `.env` file private and never upload your API key to GitHub.
-
----
-
-Built for HackNC 2026.
-
-Website domain: 
-effortless-souffle-5a23a4.netlify.app
+- Netlify
